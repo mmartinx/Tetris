@@ -81,6 +81,8 @@ namespace Tetris
             };
         }
 
+        public bool OccupiesPosition(int x, int y) => Cells.Any(c => (c.X + PosX) == x && (c.Y + PosY) == y);
+
         public bool TryDrop(Board board)
         {
             if (Cells.Any(c => (c.Y + PosY + 1 >= board.Height) || board[c.X + PosX, c.Y + PosY + 1]))
