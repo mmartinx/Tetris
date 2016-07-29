@@ -2,11 +2,11 @@
 
 namespace Tetris
 {
-    public class Output : IOutput
+    public class ConsoleOutput : IOutput
     {
         private readonly int _width;
         private readonly int _height;
-        public Output(int width, int height)
+        public ConsoleOutput(int width, int height)
         {
             _width = width;
             _height = height;

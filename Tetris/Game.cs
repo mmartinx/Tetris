@@ -12,22 +12,22 @@ namespace Tetris
         public Random RNG { get; set; }
         public PieceReference PieceRef { get; set; }
         
-        public IOutput Term { get; set; }
+        public IOutput Output { get; set; }
 
         private Game(int width, int height)
         {
             GameBoard = new Board(width, height);
             RNG = new Random();
             PieceRef = new PieceReference();
+            Output = new ConsoleOutput(width, height);
+
             Score = 0;
             SpawnPiece();
-            Term = new Output(width, height);
         }
 
         public static Game NewGame(int width, int height)
         {
-            var ng = new Game(width, height);
-            return ng;
+            return new Game(width, height);
         }
 
         public void Start()
@@ -65,7 +65,7 @@ namespace Tetris
             }
 
             Score += GameBoard.ClearLines();
-            Term.Draw(GameBoard, DroppingPiece, Score);
+            Output.Draw(GameBoard, DroppingPiece, Score);
         }
 
         private void SpawnPiece()

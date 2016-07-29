@@ -1,4 +1,7 @@
-﻿namespace Tetris
+﻿using System.Collections.Generic;
+using System.Linq;
+
+namespace Tetris
 {
     public class Board
     {
@@ -21,11 +24,19 @@
 
         public int ClearLines()
         {
-            bool clearRow;
-            int score = 0;
+            var linesToClear = GetLinesToClear().OrderByDescending(x => x).ToList();
+            if (linesToClear.Count == 0)
+                return 0;
+
+            ShiftRowsDown(linesToClear);
+            return CalculateScore(linesToClear);
+        }
+
+        private IEnumerable<int> GetLinesToClear()
+        {
             for (var y = Height - 1; y > 0; --y)
             {
-                clearRow = true;
+                bool clearRow = true;
                 for (var x = 0; x < Width; ++x)
                 {
                     if (!Tiles[x, y])
@@ -36,21 +47,45 @@
                 }
 
                 if (clearRow)
-                {
-                    ShiftRowsDown(y);
-                    score++;
-                }
+                    yield return y;
             }
-            return score;
         }
 
-        private void ShiftRowsDown(int destRow)
+        private int Score(int consecutive)
         {
-            for (var y = destRow; y > 0; --y)
+            switch (consecutive)
             {
-                for (var x = 0; x < Width; ++x)
+                case 1:
+                    return 40;
+                case 2:
+                    return 100;
+                case 3:
+                    return 300;
+                case 4:
+                    return 1200;
+                default:
+                    return 0;
+            }
+        }
+
+        private int CalculateScore(List<int> linesToClear)
+        {
+            if (linesToClear.Count == 0 || linesToClear.Count == 1)
+                return Score(linesToClear.Count);
+
+            return linesToClear.GroupConsecutive().Sum(x => Score(x.Count()));
+        }
+
+        private void ShiftRowsDown(List<int> linesToClear)
+        {
+            foreach (var destRow in linesToClear)
+            {
+                for (var y = destRow; y > 0; --y)
                 {
-                    Tiles[x, y] = Tiles[x, y - 1];
+                    for (var x = 0; x < Width; ++x)
+                    {
+                        Tiles[x, y] = Tiles[x, y - 1];
+                    }
                 }
             }
         }
