@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading;
 
 namespace Tetris
@@ -13,9 +12,9 @@ namespace Tetris
         public Random RNG { get; set; }
         public PieceReference PieceRef { get; set; }
         
-        public Output Term { get; set; }
+        public IOutput Term { get; set; }
 
-        public Game(int width, int height)
+        private Game(int width, int height)
         {
             GameBoard = new Board(width, height);
             RNG = new Random();
@@ -55,7 +54,7 @@ namespace Tetris
             } while (Console.ReadKey(true).Key != ConsoleKey.Escape);
         }
 
-        public void Tick()
+        private void Tick()
         {
             Thread.Sleep(10);
 
@@ -69,7 +68,7 @@ namespace Tetris
             Term.Draw(GameBoard, DroppingPiece, Score);
         }
 
-        public void SpawnPiece()
+        private void SpawnPiece()
         {
             DroppingPiece = new Piece(RNG, GameBoard, PieceRef);
         }
