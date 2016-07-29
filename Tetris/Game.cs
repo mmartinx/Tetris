@@ -68,7 +68,7 @@ namespace Tetris
 
         public void SpawnPiece()
         {
-            DroppingPiece = new Piece(RNG, PieceReference);
+            DroppingPiece = new Piece(RNG, GameBoard, PieceReference);
         }
 
         public void Draw()

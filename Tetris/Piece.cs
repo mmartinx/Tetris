@@ -30,9 +30,9 @@ namespace Tetris
         public char Type { get; set; }
         public int State { get; set; }
 
-        public Piece(Random rng, Dictionary<string, Point[]> pieceReference)
+        public Piece(Random rng, Board board, Dictionary<string, Point[]> pieceReference)
         {
-            PosX = 5; PosY = 0;
+            PosX = board.Width / 2; PosY = 0;
             Type = pieceNames[rng.Next(7)];
             State = 1;
             Cells = pieceReference[Type + State.ToString()];
