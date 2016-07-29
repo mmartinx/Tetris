@@ -11,7 +11,7 @@ namespace Tetris
         public int Score { get; set; }
 
         public Random RNG { get; set; }
-        public Dictionary<string, Point[]> PieceReference { get; set; }
+        public PieceReference PieceRef { get; set; }
         
         public Output Term { get; set; }
 
@@ -19,7 +19,7 @@ namespace Tetris
         {
             GameBoard = new Board(width, height);
             RNG = new Random();
-            PieceReference = Piece.GetPieceReference();
+            PieceRef = new PieceReference();
             Score = 0;
             SpawnPiece();
             Term = new Output(width, height);
@@ -48,7 +48,7 @@ namespace Tetris
                     }
                     if (Console.ReadKey().Key == ConsoleKey.UpArrow)
                     {
-                        DroppingPiece.TryRotate(GameBoard, PieceReference, Direction.RIGHT);
+                        DroppingPiece.TryRotate(GameBoard, PieceRef, Direction.RIGHT);
                     }
                     Tick();
                 }
@@ -71,7 +71,7 @@ namespace Tetris
 
         public void SpawnPiece()
         {
-            DroppingPiece = new Piece(RNG, GameBoard, PieceReference);
+            DroppingPiece = new Piece(RNG, GameBoard, PieceRef);
         }
     }
 }
