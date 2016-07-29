@@ -35,7 +35,7 @@ namespace Tetris
             PosX = board.Width / 2; PosY = 0;
             Type = pieceNames[rng.Next(7)];
             State = 1;
-            Cells = pieceReference[Type + State.ToString()];
+            Cells = pieceReference.GetPoints(Type, State);
         }
 
         private static readonly string pieceNames = "IJLOSTZ";
@@ -81,7 +81,7 @@ namespace Tetris
                 ? (State - 1 < 1 ? 4 : State - 1)
                 : (State + 1 > 4 ? 1 : State + 1);
 
-            Point[] nextPoints = pieceReference[Type + nextState.ToString()];
+            Point[] nextPoints = pieceReference.GetPoints(Type, nextState);
 
             foreach (var p in nextPoints)
             {

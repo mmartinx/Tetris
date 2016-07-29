@@ -11,7 +11,9 @@ namespace Tetris
     {
         private readonly Dictionary<string, Point[]> _reference;
 
-        public Point[] this[string key] => _reference[key];
+        private Point[] this[string key] => _reference[key];
+
+        public Point[] GetPoints(char type, int state) => this[type + state.ToString()];
 
         public PieceReference()
         {
