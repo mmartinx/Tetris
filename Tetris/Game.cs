@@ -1,5 +1,7 @@
 ﻿using System;
-using System.Threading;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 
 namespace Tetris
 {
@@ -8,64 +10,69 @@ namespace Tetris
         public Board GameBoard { get; set; }
         public Piece DroppingPiece { get; set; }
         public int Score { get; set; }
-
         public Random RNG { get; set; }
         public PieceReference PieceRef { get; set; }
-        
-        public IOutput Output { get; set; }
+        private float timer = 1.0f;
+        private const float DELAY = 1.0f;
 
-        private Game(int width, int height)
+        public IOutput Output { get; set; }
+        public IOutput Console { get; set; }
+
+        private Game(int width, int height, SpriteBatch spriteBatch, GraphicsDevice graphicsDevice)
         {
             GameBoard = new Board(width, height);
             RNG = new Random();
             PieceRef = new PieceReference();
-            Output = new ConsoleOutput(width, height);
-
+            Output = new Tetris.MonoOutput(width, height, spriteBatch, graphicsDevice);
+            Console = new Tetris.ConsoleOutput(width, height);
             Score = 0;
             SpawnPiece();
         }
 
-        public static Game NewGame(int width, int height)
+        public static Game NewGame(int width, int height, SpriteBatch spriteBatch, GraphicsDevice graphicsDevice)
         {
-            return new Game(width, height);
+            return new Game(width, height, spriteBatch, graphicsDevice);
         }
 
-        public void Start()
+        private void HandleInput(KeyboardState state)
         {
-            Tick();
-            do
-            {
-                while (!Console.KeyAvailable)
-                {
-                    if (Console.ReadKey().Key == ConsoleKey.LeftArrow)
-                    {
-                        DroppingPiece.TryMoveLeft(GameBoard);
-                    }
-                    if (Console.ReadKey().Key == ConsoleKey.RightArrow)
-                    {
-                        DroppingPiece.TryMoveRight(GameBoard);
-                    }
-                    if (Console.ReadKey().Key == ConsoleKey.UpArrow)
-                    {
-                        DroppingPiece.TryRotate(GameBoard, PieceRef, Direction.RIGHT);
-                    }
-                    Tick();
-                }
-            } while (Console.ReadKey(true).Key != ConsoleKey.Escape);
+            if (state.IsKeyDown(Keys.Left))
+                DroppingPiece.TryMoveLeft(GameBoard);
+
+            if (state.IsKeyDown(Keys.Right))
+                DroppingPiece.TryMoveRight(GameBoard);
+
+            if (state.IsKeyDown(Keys.Up))
+                DroppingPiece.TryRotate(GameBoard, PieceRef, Direction.RIGHT);
+
+            if (state.IsKeyDown(Keys.Down))
+                DroppingPiece.TryDrop(GameBoard);
         }
 
         private void Tick()
         {
-            Thread.Sleep(10);
-
             if (DroppingPiece.TryDrop(GameBoard))
             {
-                // collided, spawn a new one
                 SpawnPiece();
             }
-
             Score += GameBoard.ClearLines();
+        }
+
+        public void Update(GameTime gameTime, KeyboardState state)
+        {
+            HandleInput(state);
+            timer -= (float)gameTime.ElapsedGameTime.TotalSeconds;
+            if (timer < 0)
+            {
+                Tick();
+                timer = DELAY;
+            }
+        }
+
+        public void Draw(GameTime gameTime)
+        {
             Output.Draw(GameBoard, DroppingPiece, Score);
+            Console.Draw(GameBoard, DroppingPiece, Score);
         }
 
         private void SpawnPiece()
