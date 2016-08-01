@@ -5,17 +5,28 @@ namespace Tetris
 {
     public class MonoOutput : IOutput
     {
+        private const int SQUARE_SIZE = 20;
+
         private readonly int _width;
         private readonly int _height;
+
         private readonly SpriteBatch _spriteBatch;
         private readonly GraphicsDevice _graphicsDevice;
-        private const int SQUARE_SIZE = 20;
+        private readonly Texture2D _rect;
+
         public MonoOutput(int width, int height, SpriteBatch spriteBatch, GraphicsDevice graphicsDevice)
         {
             _width = width;
             _height = height;
             _spriteBatch = spriteBatch;
             _graphicsDevice = graphicsDevice;
+
+            _rect = new Texture2D(_graphicsDevice, SQUARE_SIZE, SQUARE_SIZE);
+            Color[] data = new Color[80 * 30];
+            for (int i = 0; i < data.Length; ++i)
+                data[i] = Color.Chocolate;
+
+            _rect.SetData(data);
         }
         public void Draw(Board board, Piece droppingPiece, int score)
         {
@@ -31,13 +42,8 @@ namespace Tetris
 
         private void DrawShape(int x, int y, char type)
         {
-            Texture2D rect = new Texture2D(_graphicsDevice, SQUARE_SIZE, SQUARE_SIZE);
-            Color[] data = new Color[80 * 30];
-            for (int i = 0; i < data.Length; ++i) data[i] = Color.Chocolate;
-            rect.SetData(data);
-
             Vector2 coor = new Vector2(x * SQUARE_SIZE, y * SQUARE_SIZE);
-            _spriteBatch.Draw(rect, coor, type == ' ' ? Color.Black : Color.White);
+            _spriteBatch.Draw(_rect, coor, type == ' ' ? Color.Black : Color.White);
         }
     }
 }
