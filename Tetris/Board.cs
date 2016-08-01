@@ -25,8 +25,8 @@ namespace Tetris
         public int ClearLines()
         {
             var linesToClear = GetLinesToClear().OrderByDescending(x => x).ToList();
-            if (linesToClear.Count == 0)
-                return 0;
+            if (linesToClear.Count == 0 || linesToClear.Count == 1)
+                return Score(linesToClear.Count);
 
             ShiftRowsDown(linesToClear);
             return CalculateScore(linesToClear);
@@ -68,13 +68,8 @@ namespace Tetris
             }
         }
 
-        private int CalculateScore(List<int> linesToClear)
-        {
-            if (linesToClear.Count == 0 || linesToClear.Count == 1)
-                return Score(linesToClear.Count);
-
-            return linesToClear.GroupConsecutive().Sum(x => Score(x.Count()));
-        }
+        private int CalculateScore(List<int> linesToClear) => 
+            linesToClear.GroupConsecutive().Sum(x => Score(x.Count()));
 
         private void ShiftRowsDown(List<int> linesToClear)
         {
