@@ -7,25 +7,24 @@ namespace Tetris
 {
     public class Game
     {
-        public Board GameBoard { get; set; }
-        public Piece DroppingPiece { get; set; }
-        public int Score { get; set; }
-        public Random RNG { get; set; }
-        public PieceReference PieceRef { get; set; }
-        private float timer = 1.0f;
+        private readonly Board _board;
+        private readonly Random _rng;
+        private readonly PieceReference _pieceReference;
+        private Piece _piece;
+        private int _score;
+        private float _timer = 1.0f;
         private const float DELAY = 1.0f;
 
-        public IOutput Output { get; set; }
-        public IOutput Console { get; set; }
+        private readonly IOutput _output;
+        private readonly IOutput _console;
 
         private Game(int width, int height, SpriteBatch spriteBatch, GraphicsDevice graphicsDevice)
         {
-            GameBoard = new Board(width, height);
-            RNG = new Random();
-            PieceRef = new PieceReference();
-            Output = new Tetris.MonoOutput(width, height, spriteBatch, graphicsDevice);
-            Console = new Tetris.ConsoleOutput(width, height);
-            Score = 0;
+            _board = new Board(width, height);
+            _rng = new Random();
+            _pieceReference = new PieceReference();
+            _output = new MonoOutput(width, height, spriteBatch, graphicsDevice);
+            _console = new ConsoleOutput(width, height);
             SpawnPiece();
         }
 
@@ -37,47 +36,47 @@ namespace Tetris
         private void HandleInput(KeyboardState state)
         {
             if (state.IsKeyDown(Keys.Left))
-                DroppingPiece.TryMoveLeft(GameBoard);
+                _piece.TryMoveLeft(_board);
 
             if (state.IsKeyDown(Keys.Right))
-                DroppingPiece.TryMoveRight(GameBoard);
+                _piece.TryMoveRight(_board);
 
             if (state.IsKeyDown(Keys.Up))
-                DroppingPiece.TryRotate(GameBoard, PieceRef, Direction.RIGHT);
+                _piece.TryRotate(_board, _pieceReference, Direction.RIGHT);
 
             if (state.IsKeyDown(Keys.Down))
-                DroppingPiece.TryDrop(GameBoard);
+                _piece.TryDrop(_board);
         }
 
         private void Tick()
         {
-            if (DroppingPiece.TryDrop(GameBoard))
+            if (_piece.TryDrop(_board))
             {
                 SpawnPiece();
             }
-            Score += GameBoard.ClearLines();
+            _score += _board.ClearLines();
         }
 
         public void Update(GameTime gameTime, KeyboardState state)
         {
             HandleInput(state);
-            timer -= (float)gameTime.ElapsedGameTime.TotalSeconds;
-            if (timer < 0)
+            _timer -= (float)gameTime.ElapsedGameTime.TotalSeconds;
+            if (_timer < 0)
             {
                 Tick();
-                timer = DELAY;
+                _timer = DELAY;
             }
         }
 
         public void Draw(GameTime gameTime)
         {
-            Output.Draw(GameBoard, DroppingPiece, Score);
-            Console.Draw(GameBoard, DroppingPiece, Score);
+            _output.Draw(_board, _piece, _score);
+            _console.Draw(_board, _piece, _score);
         }
 
         private void SpawnPiece()
         {
-            DroppingPiece = new Piece(RNG, GameBoard, PieceRef);
+            _piece = new Piece(_rng, _board, _pieceReference);
         }
     }
 }
