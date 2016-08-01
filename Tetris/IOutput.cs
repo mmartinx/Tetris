@@ -1,6 +1,8 @@
+using System;
+
 namespace Tetris
 {
-    public interface IOutput
+    public interface IOutput : IDisposable
     {
         void Draw(Board board, Piece droppingPiece, int score);
     }

@@ -1,33 +1,22 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace Tetris
 {
     public class MonoOutput : IOutput
     {
-        private const int SQUARE_SIZE = 20;
-
-        private readonly int _width;
-        private readonly int _height;
+        private const int SquareSize = 15;
 
         private readonly SpriteBatch _spriteBatch;
-        private readonly GraphicsDevice _graphicsDevice;
         private readonly Texture2D _rect;
 
-        public MonoOutput(int width, int height, SpriteBatch spriteBatch, GraphicsDevice graphicsDevice)
+        public MonoOutput(SpriteBatch spriteBatch, GraphicsDevice graphicsDevice)
         {
-            _width = width;
-            _height = height;
             _spriteBatch = spriteBatch;
-            _graphicsDevice = graphicsDevice;
-
-            _rect = new Texture2D(_graphicsDevice, SQUARE_SIZE, SQUARE_SIZE);
-            Color[] data = new Color[80 * 30];
-            for (int i = 0; i < data.Length; ++i)
-                data[i] = Color.Chocolate;
-
-            _rect.SetData(data);
+            _rect = CreateRect(SquareSize, SquareSize, Color.White, graphicsDevice);
         }
+
         public void Draw(Board board, Piece droppingPiece, int score)
         {
             for (var y = 0; y < board.Height; ++y)
@@ -35,15 +24,36 @@ namespace Tetris
                 for (var x = 0; x < board.Width; ++x)
                 {
                     char type = droppingPiece.OccupiesPosition(x, y) ? 'X' : (board[x, y] ? '#' : ' ');
-                    DrawShape(x, y, type);
+                    DrawRect(x, y, type);
                 }
             }
         }
 
-        private void DrawShape(int x, int y, char type)
+        private Texture2D CreateRect(int width, int height, Color color, GraphicsDevice graphicsDevice)
         {
-            Vector2 coor = new Vector2(x * SQUARE_SIZE, y * SQUARE_SIZE);
-            _spriteBatch.Draw(_rect, coor, type == ' ' ? Color.Black : Color.White);
+            var rect = new Texture2D(graphicsDevice, width, height);
+            Color[] data = new Color[width * height];
+            for (int i = 0; i < data.Length; ++i)
+                data[i] = color;
+
+            rect.SetData(data);
+            return rect;
+        }
+
+        private void DrawRect(int x, int y, char type)
+        {
+            var position = new Vector2(x * SquareSize, y * SquareSize);
+            _spriteBatch.Draw(_rect, position, type == ' ' ? Color.Black : Color.White);
+        }
+
+        public void Dispose()
+        {
+            _rect.Dispose();
+        }
+
+        ~MonoOutput()
+        {
+            Dispose();
         }
     }
 }

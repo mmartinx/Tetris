@@ -32,6 +32,12 @@ namespace Example2
             _spriteBatch = new SpriteBatch(_graphics.GraphicsDevice);
         }
 
+        protected override void UnloadContent()
+        {
+            Dispose();
+            _tetrisGame.Dispose();
+        }
+
         protected override void Update(GameTime gameTime)
         {
             base.Update(gameTime);

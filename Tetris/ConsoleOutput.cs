@@ -56,5 +56,10 @@ namespace Tetris
             DrawBoard(board, droppingPiece);
             DrawLine();
         }
+
+        public void Dispose()
+        {
+            
+        }
     }
 }

@@ -5,7 +5,7 @@ using Microsoft.Xna.Framework.Input;
 
 namespace Tetris
 {
-    public class Game
+    public class Game : IDisposable
     {
         private readonly Board _board;
         private readonly Random _rng;
@@ -23,7 +23,7 @@ namespace Tetris
             _board = new Board(width, height);
             _rng = new Random();
             _pieceReference = new PieceReference();
-            _output = new MonoOutput(width, height, spriteBatch, graphicsDevice);
+            _output = new MonoOutput(spriteBatch, graphicsDevice);
             _console = new ConsoleOutput(width, height);
             SpawnPiece();
         }
@@ -77,6 +77,11 @@ namespace Tetris
         private void SpawnPiece()
         {
             _piece = new Piece(_rng, _board, _pieceReference);
+        }
+
+        public void Dispose()
+        {
+            _output.Dispose();
         }
     }
 }
