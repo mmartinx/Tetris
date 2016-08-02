@@ -51,7 +51,7 @@ namespace Tetris
             }
         }
 
-        private int Score(int consecutive)
+        private static int Score(int consecutive)
         {
             switch (consecutive)
             {
@@ -68,10 +68,10 @@ namespace Tetris
             }
         }
 
-        private int CalculateScore(List<int> linesToClear) => 
+        private int CalculateScore(IEnumerable<int> linesToClear) => 
             linesToClear.GroupConsecutive().Sum(x => Score(x.Count()));
 
-        private void ShiftRowsDown(List<int> linesToClear)
+        private void ShiftRowsDown(IEnumerable<int> linesToClear)
         {
             foreach (var destRow in linesToClear)
             {

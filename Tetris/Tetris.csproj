@@ -70,6 +70,7 @@
     <Compile Include="Board.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="Game.cs" />
+    <Compile Include="InputHandler.cs" />
     <Compile Include="IOutput.cs" />
     <Compile Include="ConsoleOutput.cs" />
     <Compile Include="MonoOutput.cs" />

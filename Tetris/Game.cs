@@ -7,14 +7,15 @@ namespace Tetris
 {
     public class Game : IDisposable
     {
+        private const double Delay = 1.0;
         private readonly Board _board;
         private readonly Random _rng;
         private readonly PieceReference _pieceReference;
+        private readonly InputHandler _input;
         private Piece _piece;
         private int _score;
-        private float _timer = 1.0f;
-        private const float DELAY = 1.0f;
-
+        private double _timer = Delay;
+ 
         private readonly IOutput _output;
         private readonly IOutput _console;
 
@@ -25,27 +26,13 @@ namespace Tetris
             _pieceReference = new PieceReference();
             _output = new MonoOutput(spriteBatch, graphicsDevice);
             _console = new ConsoleOutput(width, height);
+            _input = new InputHandler();
             SpawnPiece();
         }
 
         public static Game NewGame(int width, int height, SpriteBatch spriteBatch, GraphicsDevice graphicsDevice)
         {
             return new Game(width, height, spriteBatch, graphicsDevice);
-        }
-
-        private void HandleInput(KeyboardState state)
-        {
-            if (state.IsKeyDown(Keys.Left))
-                _piece.TryMoveLeft(_board);
-
-            if (state.IsKeyDown(Keys.Right))
-                _piece.TryMoveRight(_board);
-
-            if (state.IsKeyDown(Keys.Up))
-                _piece.TryRotate(_board, _pieceReference, Direction.RIGHT);
-
-            if (state.IsKeyDown(Keys.Down))
-                _piece.TryDrop(_board);
         }
 
         private void Tick()
@@ -57,14 +44,27 @@ namespace Tetris
             _score += _board.ClearLines();
         }
 
-        public void Update(GameTime gameTime, KeyboardState state)
+        public void Update(GameTime gameTime)
         {
-            HandleInput(state);
-            _timer -= (float)gameTime.ElapsedGameTime.TotalSeconds;
+            _input.Update();
+
+            if (_input.KeyUp(Keys.Left))
+                _piece.TryMoveLeft(_board);
+
+            if (_input.KeyUp(Keys.Right))
+                _piece.TryMoveRight(_board);
+
+            if (_input.KeyUp(Keys.Up))
+                _piece.TryRotate(_board, _pieceReference, Direction.RIGHT);
+
+            if (_input.KeyUp(Keys.Down))
+                _piece.TryDrop(_board);
+
+            _timer -= gameTime.ElapsedGameTime.TotalSeconds;
             if (_timer < 0)
             {
                 Tick();
-                _timer = DELAY;
+                _timer = Delay;
             }
         }
 

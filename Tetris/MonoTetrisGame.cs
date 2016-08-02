@@ -41,7 +41,7 @@ namespace Example2
         protected override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
-            _tetrisGame.Update(gameTime, Keyboard.GetState());
+            _tetrisGame.Update(gameTime);
         }
 
         protected override void Draw(GameTime gameTime)
