@@ -39,9 +39,9 @@ namespace Tetris
         {
             if (_piece.TryDrop(_board))
             {
+                _score += _board.ClearLines();
                 SpawnPiece();
             }
-            _score += _board.ClearLines();
         }
 
         public void Update(GameTime gameTime)
@@ -71,7 +71,7 @@ namespace Tetris
         public void Draw(GameTime gameTime)
         {
             _output.Draw(_board, _piece, _score);
-            _console.Draw(_board, _piece, _score);
+            //_console.Draw(_board, _piece, _score);
         }
 
         private void SpawnPiece()

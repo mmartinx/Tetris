@@ -25,8 +25,9 @@ namespace Tetris
         public int ClearLines()
         {
             var linesToClear = GetLinesToClear().OrderByDescending(x => x).ToList();
-            if (linesToClear.Count == 0 || linesToClear.Count == 1)
-                return Score(linesToClear.Count);
+
+            if (linesToClear.Count == 0)
+                return 0;
 
             ShiftRowsDown(linesToClear);
             return CalculateScore(linesToClear);
