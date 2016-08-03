@@ -5,7 +5,6 @@ namespace Tetris
     public class PieceReference
     {
         private readonly Dictionary<string, Point[]> _reference;
-
         private Point[] this[string key] => _reference[key];
 
         public Point[] GetPoints(char type, int state) => this[type + state.ToString()];
