@@ -6,27 +6,32 @@ namespace Tetris
 {
     public class TextureReference
     {
+        private readonly int _squareSize;
+        private readonly GraphicsDevice _graphicsDevice;
         private readonly Dictionary<char, Texture2D> _store;
 
         public TextureReference(GraphicsDevice graphicsDevice, int squareSize)
         {
+            _squareSize = squareSize;
+            _graphicsDevice = graphicsDevice;
+
             _store = new Dictionary<char, Texture2D>
             {
-                {'I', CreateRect(squareSize, squareSize, Color.Cyan, graphicsDevice) },
-                {'J', CreateRect(squareSize, squareSize, Color.Yellow, graphicsDevice) },
-                {'L', CreateRect(squareSize, squareSize, Color.Purple, graphicsDevice) },
-                {'O', CreateRect(squareSize, squareSize, Color.GreenYellow, graphicsDevice) },
-                {'S', CreateRect(squareSize, squareSize, Color.Red, graphicsDevice) },
-                {'T', CreateRect(squareSize, squareSize, Color.Blue, graphicsDevice) },
-                {'Z', CreateRect(squareSize, squareSize, Color.SandyBrown, graphicsDevice) },
-                {' ', CreateRect(squareSize, squareSize, Color.Black, graphicsDevice) }
+                {'I', CreateRect(Color.Cyan) },
+                {'J', CreateRect(Color.Yellow) },
+                {'L', CreateRect(Color.Purple) },
+                {'O', CreateRect(Color.GreenYellow) },
+                {'S', CreateRect(Color.Red) },
+                {'T', CreateRect(Color.Blue) },
+                {'Z', CreateRect(Color.SandyBrown) },
+                {' ', CreateRect(Color.Black) }
             };
         }
 
-        private Texture2D CreateRect(int width, int height, Color color, GraphicsDevice graphicsDevice)
+        private Texture2D CreateRect(Color color)
         {
-            var rect = new Texture2D(graphicsDevice, width, height);
-            Color[] data = new Color[width * height];
+            Texture2D rect = new Texture2D(_graphicsDevice, _squareSize, _squareSize);
+            Color[] data = new Color[_squareSize * _squareSize];
             for (int i = 0; i < data.Length; ++i)
                 data[i] = color;
 
