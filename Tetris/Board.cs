@@ -5,11 +5,11 @@ namespace Tetris
 {
     public class Board
     {
-        public bool[,] Tiles { get; set; }
+        public char[,] Tiles { get; set; }
         public int Width { get; set; }
         public int Height { get; set; }
 
-        public bool this[int x, int y]
+        public char this[int x, int y]
         {
             get { return Tiles[x, y]; }
             set { Tiles[x, y] = value; }
@@ -17,9 +17,16 @@ namespace Tetris
 
         public Board(int width, int height)
         {
-            Tiles = new bool[width, height];
+            Tiles = new char[width, height];
             Width = width;
             Height = height;
+            for (var y = 0; y < height; ++y)
+            {
+                for (var x = 0; x < width; ++x)
+                {
+                    Tiles[x, y] = ' ';
+                }
+            }
         }
 
         public int ClearLines()
@@ -40,7 +47,7 @@ namespace Tetris
                 bool clearRow = true;
                 for (var x = 0; x < Width; ++x)
                 {
-                    if (!Tiles[x, y])
+                    if (Tiles[x, y] == ' ')
                     {
                         clearRow = false;
                         break;

@@ -43,11 +43,11 @@ namespace Tetris
 
         public bool TryDrop(Board board)
         {
-            if (Cells.Any(c => (c.Y + PosY + 1 >= board.Height) || board[c.X + PosX, c.Y + PosY + 1]))
+            if (Cells.Any(c => (c.Y + PosY + 1 >= board.Height) || board[c.X + PosX, c.Y + PosY + 1] != ' '))
             {
                 foreach (var cell in Cells)
                 {
-                    board[cell.X + PosX, cell.Y + PosY] = true;
+                    board[cell.X + PosX, cell.Y + PosY] = Type;
                 }
                 return true;
             }
@@ -58,7 +58,7 @@ namespace Tetris
 
         public bool TryMoveLeft(Board board)
         {
-            if (Cells.Any(c => (c.X + PosX - 1 < 0) || board[c.X + PosX - 1, c.Y + PosY]))
+            if (Cells.Any(c => (c.X + PosX - 1 < 0) || board[c.X + PosX - 1, c.Y + PosY] != ' '))
                 return true;
 
             PosX--;
@@ -67,7 +67,7 @@ namespace Tetris
 
         public bool TryMoveRight(Board board)
         {
-            if (Cells.Any(c => (c.X + PosX + 1 >= board.Width) || board[c.X + PosX + 1, c.Y + PosY]))
+            if (Cells.Any(c => (c.X + PosX + 1 >= board.Width) || board[c.X + PosX + 1, c.Y + PosY] != ' '))
                 return true;
 
             PosX++;

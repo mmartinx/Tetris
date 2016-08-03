@@ -8,12 +8,12 @@ namespace Tetris
         private const int SquareSize = 15;
 
         private readonly SpriteBatch _spriteBatch;
-        private readonly Texture2D _rect;
+        private readonly TextureReference _textureRef;
 
         public MonoOutput(SpriteBatch spriteBatch, GraphicsDevice graphicsDevice)
         {
             _spriteBatch = spriteBatch;
-            _rect = CreateRect(SquareSize, SquareSize, Color.White, graphicsDevice);
+            _textureRef = new TextureReference(graphicsDevice, SquareSize);
         }
 
         public void Draw(Board board, Piece droppingPiece, int score)
@@ -22,32 +22,24 @@ namespace Tetris
             {
                 for (var x = 0; x < board.Width; ++x)
                 {
-                    char type = droppingPiece.OccupiesPosition(x, y) ? 'X' : (board[x, y] ? '#' : ' ');
+                    char type = GetCellType(board, droppingPiece, x, y);
                     DrawRect(x, y, type);
                 }
             }
         }
 
-        private Texture2D CreateRect(int width, int height, Color color, GraphicsDevice graphicsDevice)
-        {
-            var rect = new Texture2D(graphicsDevice, width, height);
-            Color[] data = new Color[width * height];
-            for (int i = 0; i < data.Length; ++i)
-                data[i] = color;
-
-            rect.SetData(data);
-            return rect;
-        }
+        private char GetCellType(Board board, Piece droppingPiece, int x, int y) 
+            => droppingPiece.OccupiesPosition(x, y) ? droppingPiece.Type : board[x, y]; 
 
         private void DrawRect(int x, int y, char type)
         {
             var position = new Vector2(x * SquareSize, y * SquareSize);
-            _spriteBatch.Draw(_rect, position, type == ' ' ? Color.Black : Color.White);
+            _spriteBatch.Draw(_textureRef[type], position);
         }
 
         public void Dispose()
         {
-            _rect.Dispose();
+            _textureRef.Dispose();
         }
 
         ~MonoOutput()

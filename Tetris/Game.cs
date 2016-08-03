@@ -25,7 +25,7 @@ namespace Tetris
             _rng = new Random();
             _pieceReference = new PieceReference();
             _output = new MonoOutput(spriteBatch, graphicsDevice);
-            _console = new ConsoleOutput(width, height);
+            //_console = new ConsoleOutput(width, height);
             _input = new InputHandler();
             SpawnPiece();
         }
